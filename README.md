@@ -2,5 +2,7 @@
 =========================================================================================================
 
 A fork from https://github.com/tking/JSTUN
+
 This repo should be compatible with intellij IDE.
-For more info, visit go to the original repo.
+
+For more info, go to the original repo.
