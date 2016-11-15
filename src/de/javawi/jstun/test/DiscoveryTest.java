@@ -53,6 +53,21 @@ public class DiscoveryTest {
 		this.stunServer = stunServer;
 		this.stunServerPort = stunServerPort;
 	}
+
+	public  DiscoveryInfo quickTest() throws UtilityException, SocketException, UnknownHostException, IOException, MessageAttributeParsingException, MessageAttributeException, MessageHeaderParsingException {
+		ma = null;
+		ca = null;
+		nodeNatted = true;
+		socketTest1 = null;
+		di = new DiscoveryInfo(sourceIaddress);
+
+        test1();
+		socketTest1.close();
+		try { Thread.sleep(10); }
+		catch (InterruptedException e) {e.printStackTrace();}
+
+		return di;
+	}
 		
 	public DiscoveryInfo test() throws UtilityException, SocketException, UnknownHostException, IOException, MessageAttributeParsingException, MessageAttributeException, MessageHeaderParsingException{
 		ma = null;
@@ -73,18 +88,22 @@ public class DiscoveryTest {
 		
 		return di;
 	}
-	
+
 	private boolean test1() throws UtilityException, SocketException, UnknownHostException, IOException, MessageAttributeParsingException, MessageHeaderParsingException {
 		int timeSinceFirstTransmission = 0;
 		int timeout = timeoutInitValue;
 		while (true) {
 			try {
+                System.out.println("Trying to get external address");
+				Thread.sleep(100);
 				// Test 1 including response
 				socketTest1 = new DatagramSocket(new InetSocketAddress(sourceIaddress, sourcePort));
 				socketTest1.setReuseAddress(true);
+				Thread.sleep(100);
 				socketTest1.connect(InetAddress.getByName(stunServer), stunServerPort);
 				socketTest1.setSoTimeout(timeout);
-				
+
+				Thread.sleep(100);
 				MessageHeader sendMH = new MessageHeader(MessageHeader.MessageHeaderType.BindingRequest);
 				sendMH.generateTransactionID();
 				
@@ -141,7 +160,11 @@ public class DiscoveryTest {
 					LOGGER.debug("Node is not capable of UDP communication.");
 					return false;
 				}
-			} 
+			} catch (InterruptedException e) {
+				// So sad...
+			}
+
+			if(socketTest1 != null) socketTest1.close();
 		}
 	}
 		
